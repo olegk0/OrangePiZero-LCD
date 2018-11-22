@@ -392,7 +392,12 @@ int main()
 //	PrintMainMenu();
     PrintMainScreen1();
 
+    unsigned ri=0;
     while (keepRunning) {
+	if(ri++ > 20){
+	    ri=0;
+	    LCDInit(LCD_PINS, LCD_CONTRAST);
+	}
 	DoSomething();
 
 	for (int i = 0; i < 100; i++) {
