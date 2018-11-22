@@ -1,15 +1,30 @@
 
 enum
 {
-	KEY_UP,
-	KEY_DOWN,
-	KEY_LEFT,
-	KEY_RIGHT
+	KEY_SHORT,
+	KEY_LONG,
 };
+
+typedef struct {
+    long uptime;             /* Seconds since boot */
+    unsigned long loads[3];  /* 1, 5, and 15 minute load averages */
+    unsigned long totalram;  /* Total usable main memory size */
+    unsigned long freeram;   /* Available memory size */
+} mysysinfo;
+
+typedef struct {
+    char name[20];
+    char mount[128];
+    char size[10];
+    char free[10];
+    char usedPRC[6];
+//    unsigned size;
+//    unsigned free;
+} disk_info;
 
 typedef struct Button
 {
-	short int pin;
+//	short int pin;
 	void (*OnPress)();
 } Button;
 
