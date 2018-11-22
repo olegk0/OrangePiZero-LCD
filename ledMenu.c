@@ -179,17 +179,18 @@ void drawMainScreen1()
 
 	float f_load = (float) si.loads[0] / (1 << SI_LOAD_SHIFT);
 	unsigned cload = f_load * 100.f;
-	unsigned days = si.uptime / 86400;
-	unsigned hours = (si.uptime / 3600) - (days * 24);
-	unsigned mins = (si.uptime / 60) - (days * 1440) - (hours * 60);
 	//printf("\033[1;33m  Total Ram: \033[0;m %ldk \t Free: %ldk \n", si.totalram / 1024, si.freeram / 1024);
 	disk_info di[2]; //TODO size
 	int disks = getDisksInfo(di, 2);
-	//printf("DrawClock() in %lu\n", CurrentMillis);
+
+	unsigned freeram = si.freeram / 1024 / 1024;
+	unsigned totalram = si.totalram / 1024 / 1024;
+	totalram = (freeram * 100) / totalram;
 
 	char buf[32];
 	LCDclear();
-	snprintf(buf, sizeof(buf), "UPt:%.1u:%2.2u:%2.2u", days, hours, mins);
+	snprintf(buf, sizeof(buf), "MF:%uM %u%%", freeram, totalram);
+
 	LCDdrawstring(0, 0, buf);
 	snprintf(buf, sizeof(buf), "CPU:%3.1u%% %3.uC", cload, getCPUTemp());
 	LCDdrawstring(0, 8, buf);
@@ -221,10 +222,9 @@ void drawMainScreen2()
 	mysysinfo si;
 	getSysInfo(&si);
 
-	//printf("\033[1;33m  Total Ram: \033[0;m %ldk \t Free: %ldk \n", si.totalram / 1024, si.freeram / 1024);
-	unsigned freeram = si.freeram / 1024 / 1024;
-	unsigned totalram = si.totalram / 1024 / 1024;
-	totalram = (freeram * 100) / totalram;
+	unsigned days = si.uptime / 86400;
+	unsigned hours = (si.uptime / 3600) - (days * 24);
+	unsigned mins = (si.uptime / 60) - (days * 1440) - (hours * 60);
 
 	struct ifaddrs *ifAddrStruct = NULL;
 	struct ifaddrs *ifa = NULL;
@@ -234,7 +234,7 @@ void drawMainScreen2()
 
 	char buf[32];
 	LCDclear();
-	snprintf(buf, sizeof(buf), "MF:%uM %u%%", freeram, totalram);
+	snprintf(buf, sizeof(buf), "UPt:%.1u:%2.2u:%2.2u", days, hours, mins);
 	LCDdrawstring(0, 0, buf);
 
 	for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
@@ -428,5 +428,6 @@ int main()
     }
 
     LCDclear();
+    LCDdrawstring(20, 16, "Goodbye!");
     LCDdisplay();
 }
